@@ -46,44 +46,48 @@ public class FloatingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_floating);
         CharSequence text = getIntent()
                 .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT);
-        TextView textView = findViewById(R.id.text);
-        textView.setText(text);
+        if (!text.equals(null)){
+            TextView textView = findViewById(R.id.text);
+            textView.setText(text);
 
-        recyclerView = findViewById(R.id.rv_results);
+            recyclerView = findViewById(R.id.rv_results);
 
-        adapter = new FloatingResultsAdapter(resultsList,getApplicationContext());
-        linearLayoutManager = new LinearLayoutManager(this);
+            adapter = new FloatingResultsAdapter(resultsList,getApplicationContext());
+            linearLayoutManager = new LinearLayoutManager(this);
 
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(adapter);
-
-        query = urlJsonObj1 + text + getUrlJsonObj2 + apiKey;
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(query, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                Log.d("RESPONSE", response.toString());
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject object = (JSONObject) response.get(i);
-                        String word = object.getString("word");
-                        String part = object.getString("partOfSpeech");
-                        String meaning = object.getString("text");
-                        JSONObject examples = (JSONObject) object.getJSONArray("exampleUses").get(0);
-                        String example = examples.getString("text");
-                        resultsList.add(new Results(word,meaning,example,part));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(adapter);
+            query = urlJsonObj1 + text + getUrlJsonObj2 + apiKey;
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(query, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    Log.d("RESPONSE", response.toString());
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject object = (JSONObject) response.get(i);
+                            String word = object.getString("word");
+                            String part = object.getString("partOfSpeech");
+                            String meaning = object.getString("text");
+                            JSONObject examples = (JSONObject) object.getJSONArray("exampleUses").get(0);
+                            String example = examples.getString("text");
+                            Log.d("RESPONSE", word);
+                            resultsList.add(new Results(word,meaning,example,part));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    // Toast.makeText(getApplicationContext(),resultsList.get(1).getWord(),Toast.LENGTH_LONG).show();
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-            }
-        });
-        AppController.getInstance().addToRequestQueue(jsonArrayRequest);
+                }
+            });
+            AppController.getInstance().addToRequestQueue(jsonArrayRequest);
+        }
+
     }
 
     public void setUpWindow() {
