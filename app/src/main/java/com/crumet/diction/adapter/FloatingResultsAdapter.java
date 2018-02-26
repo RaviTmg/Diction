@@ -38,10 +38,18 @@ public class FloatingResultsAdapter extends RecyclerView.Adapter<FloatingResults
     @Override
     public void onBindViewHolder(ViewHolder h, int position) {
         Results results = resultsList.get(position);
-        h.meaning.setText(Html.fromHtml("<b>"+results.getPartOfSpeech()+": </b>"+ results.getMeaning()));
-        h.example.setText(Html.fromHtml(results.getExample()));
+        String examples = results.getExample();
+        String parts = results.getPartOfSpeech();
+        String meaning = results.getMeaning();
+        h.meaning.setText(Html.fromHtml("<b>"+parts+". </b>"+ meaning));
+        if(examples.length() > 0) {
+            h.example.setText(Html.fromHtml("<b>Examples: </b><br/>" + examples));
+        } else {
+            h.example.setVisibility(View.GONE);
+        }
+
         int number  = position+1;
-        h.number.setText(number+") ");
+        h.number.setText(number+". ");
     }
 
     @Override

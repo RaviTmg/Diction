@@ -8,7 +8,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="8sp"
+        >
 
         <TextView
             android:id="@+id/number"
@@ -16,18 +18,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="1)"
-            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+            android:text="1."
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/meaning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/number"
-            android:textColor="#000"
-            android:textSize="20sp"
+            android:textColor="#333"
+            android:textSize="16sp"
             android:text="noun: " />
 
 
@@ -36,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="-8dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_arrow_drop_down_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,26 +52,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/text_example"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:text="example"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="43dp" />
+        android:orientation="vertical"
+        android:id="@+id/more_about_word"
+        android:background="#f3f3f3"
+        >
 
         <TextView
             android:id="@+id/example"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:textSize="18sp"
-            android:text="laso jastai xa tyo muji"
+            android:layout_marginStart="36dp"
+            android:textSize="16sp"
+            android:textColor="#444"
+            android:paddingTop="8sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_example" />
     </LinearLayout>
