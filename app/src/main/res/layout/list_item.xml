@@ -7,10 +7,10 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/expand_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8sp"
-        >
+        android:padding="8sp">
 
         <TextView
             android:id="@+id/number"
@@ -19,9 +19,9 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="1."
-            android:textStyle="bold"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/meaning"
@@ -30,18 +30,18 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/number"
+            android:text="noun: "
             android:textColor="#333"
-            android:textSize="16sp"
-            android:text="noun: " />
+            android:textSize="16sp" />
 
 
         <ImageView
-            android:id="@+id/expand"
+            android:id="@+id/expand_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="-8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:src="@drawable/ic_arrow_drop_down_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -49,24 +49,25 @@
     </RelativeLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+    <net.cachapa.expandablelayout.ExpandableLayout
         android:id="@+id/more_about_word"
-        android:background="#f3f3f3"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:el_duration="300"
+        app:el_expanded="false"
+        android:background="#f1f1f1"
+        app:el_parallax="0.5">
 
         <TextView
             android:id="@+id/example"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
-            android:textSize="16sp"
-            android:textColor="#444"
             android:paddingTop="8sp"
+            android:textColor="#444"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_example" />
-    </LinearLayout>
+    </net.cachapa.expandablelayout.ExpandableLayout>
 
 </LinearLayout>
