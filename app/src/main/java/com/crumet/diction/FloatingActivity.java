@@ -2,8 +2,8 @@ package com.crumet.diction;
 
 import android.content.Intent;
 import android.graphics.Point;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,17 +12,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crumet.diction.adapter.FloatingResultsAdapter;
 import com.crumet.diction.model.Results;
+import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,18 +31,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FloatingActivity extends AppCompatActivity {
+public class FloatingActivity extends AppCompatActivity implements MaterialSearchBar.OnSearchActionListener {
     private String apiKey = "0pZg7j5WRkmshUEzrhTYXsZmWv9tp1505KZjsn5A0bNGGCcQtm";
     private String apiHost = "wordsapiv1.p.mashape.com";
     private String apiUrl = "https://wordsapiv1.p.mashape.com/words/";
 
 
     List<Results> resultsList = new ArrayList<>();
-    Results results;
+    List<String> lastSearches;
 
     RecyclerView recyclerView;
     FloatingResultsAdapter adapter;
     LinearLayoutManager linearLayoutManager;
+    MaterialSearchBar materialSearchBar;
+    TextView tvNoInternet;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +55,32 @@ public class FloatingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_floating);
         CharSequence text = getIntent()
                 .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT);
-        TextView textView = findViewById(R.id.text);
-        textView.setText(text);
+
 
         recyclerView = findViewById(R.id.rv_results);
+        materialSearchBar = findViewById(R.id.searchBar);
+        tvNoInternet = findViewById(R.id.tv_no_internet);
 
+        materialSearchBar.setOnSearchActionListener(this);
+        lastSearches = materialSearchBar.getLastSuggestions();
+        materialSearchBar.setLastSuggestions(lastSearches);
         adapter = new FloatingResultsAdapter(recyclerView, resultsList, getApplicationContext());
         linearLayoutManager = new LinearLayoutManager(this);
 
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
+        if (text == null) {
+            materialSearchBar.setPlaceHolder(getString(R.string.app_name));
+        } else {
+            materialSearchBar.setPlaceHolder(text);
+            materialSearchBar.setText(String.valueOf(text));
+            performSearch(text);
+        }
 
+    }
+
+    private void performSearch(CharSequence text) {
+        resultsList.clear();
         String query = apiUrl + text;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, query, null, new Response.Listener<JSONObject>() {
             @Override
@@ -97,6 +114,7 @@ public class FloatingActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             public void onErrorResponse(VolleyError error) {
                 // error handle
+                tvNoInternet.setVisibility(View.VISIBLE);
             }
         }) {
             @Override
@@ -140,4 +158,33 @@ public class FloatingActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //save last queries to disk
+        //  saveSearchSuggestionToDisk(searchBar.getLastSuggestions());
+    }
+
+    @Override
+    public void onSearchStateChanged(boolean enabled) {
+        String s = enabled ? "enabled" : "disabled";
+        if (!enabled) {
+            materialSearchBar.setPlaceHolder(getString(R.string.app_name));
+        }
+    }
+
+    @Override
+    public void onSearchConfirmed(CharSequence text) {
+        //startSearch(text.toString(), true, null, true);
+
+        performSearch(text);
+    }
+
+    @Override
+    public void onButtonClicked(int buttonCode) {
+        switch (buttonCode) {
+
+        }
+
+    }
 }
