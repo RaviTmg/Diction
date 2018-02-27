@@ -58,7 +58,7 @@ public class FloatingActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.rv_results);
 
-        adapter = new FloatingResultsAdapter(resultsList, getApplicationContext());
+        adapter = new FloatingResultsAdapter(recyclerView, resultsList, getApplicationContext());
         linearLayoutManager = new LinearLayoutManager(this);
 
         recyclerView.setLayoutManager(linearLayoutManager);
