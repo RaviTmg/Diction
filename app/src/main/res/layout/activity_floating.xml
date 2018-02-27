@@ -7,24 +7,34 @@
     android:orientation="vertical"
     tools:context="com.crumet.diction.FloatingActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/floatingbox_toolbar_background"
-        android:padding="16dp">
-
+        android:elevation="5sp"
+        android:backgroundTint="@color/colorAccent"
+        android:padding="4dp">
         <com.mancj.materialsearchbar.MaterialSearchBar
             android:id="@+id/searchBar"
-            style="@style/MaterialSearchBarLight"
+            style="@style/MaterialSearchBarDark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:mt_searchBarColor="@color/colorAccent"
+            app:mt_textColor="#fff"
+            app:mt_placeholderColor="#f4f4f4"
+            app:mt_highlightedTextColor="#fff"
             app:mt_placeholder="@string/app_name"
+            app:mt_backIconTint="#fff"
+            app:mt_clearIconTint="#fff"
+            app:mt_searchIconTint="#fff"
+            app:mt_hintColor="#fff"
+            app:mt_dividerColor="#333"
             app:mt_hint="Search for words"
-            app:mt_maxSuggestionsCount="10"
             app:mt_navIconEnabled="false"
+            app:mt_maxSuggestionsCount="0"
             app:mt_borderlessRippleEnabled="true"
             app:mt_speechMode="false" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
