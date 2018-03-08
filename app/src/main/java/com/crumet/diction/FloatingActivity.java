@@ -1,5 +1,6 @@
 package com.crumet.diction;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -11,11 +12,20 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crumet.diction.adapter.FloatingResultsAdapter;
@@ -44,7 +54,8 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
     FloatingResultsAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     MaterialSearchBar materialSearchBar;
-    TextView tvNoInternet;
+    Button btnReload;
+    LinearLayout layoutNoInternet;
 
 
 
@@ -59,11 +70,10 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
 
         recyclerView = findViewById(R.id.rv_results);
         materialSearchBar = findViewById(R.id.searchBar);
-        tvNoInternet = findViewById(R.id.tv_no_internet);
+        layoutNoInternet = findViewById(R.id.layout_no_internet);
+        btnReload = findViewById(R.id.btn_reload);
 
         materialSearchBar.setOnSearchActionListener(this);
-        lastSearches = materialSearchBar.getLastSuggestions();
-        materialSearchBar.setLastSuggestions(lastSearches);
         adapter = new FloatingResultsAdapter(recyclerView, resultsList, getApplicationContext());
         linearLayoutManager = new LinearLayoutManager(this);
 
@@ -77,6 +87,13 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
             performSearch(text);
         }
 
+        btnReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO:add code for reloading
+            }
+        });
+
     }
 
     private void performSearch(CharSequence text) {
@@ -86,6 +103,8 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("RESPONSE", response.toString());
+               layoutNoInternet.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
                 JSONArray results = null;
                 try {
                     results = response.getJSONArray("results");
@@ -113,8 +132,19 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
             }
         }, new Response.ErrorListener() {
             public void onErrorResponse(VolleyError error) {
-                // error handle
-                tvNoInternet.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                    //This indicates that the reuest has either time out or there is no connection
+                    layoutNoInternet.setVisibility(View.VISIBLE);
+                } else if (error instanceof AuthFailureError) {
+                    // Error indicating that there was an Authentication Failure while performing the request
+                } else if (error instanceof ServerError) {
+                    //Indicates that the server responded with a error response
+                } else if (error instanceof NetworkError) {
+                    //Indicates that there was network error while performing the request
+                } else if (error instanceof ParseError) {
+                    // Indicates that the server response could not be parsed
+                }
             }
         }) {
             @Override
@@ -170,13 +200,22 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
         String s = enabled ? "enabled" : "disabled";
         if (!enabled) {
             materialSearchBar.setPlaceHolder(getString(R.string.app_name));
+        } else {
+
+            lastSearches = materialSearchBar.getLastSuggestions();
+            materialSearchBar.setLastSuggestions(lastSearches);
+            layoutNoInternet.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onSearchConfirmed(CharSequence text) {
         //startSearch(text.toString(), true, null, true);
-
+       /* View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }*/
         performSearch(text);
     }
 

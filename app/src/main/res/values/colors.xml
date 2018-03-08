@@ -3,4 +3,7 @@
     <color name="colorPrimary">#317589</color>
     <color name="colorPrimaryDark">#48929B</color>
     <color name="colorAccent">#044F67</color>
+    <color name="textColorLight">#616161</color>
+
+    <color name="searchBarIconColor">#48929B</color>
 </resources>
