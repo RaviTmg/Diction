@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -57,6 +58,9 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
     MaterialSearchBar materialSearchBar;
     Button btnReload;
     LinearLayout layoutNoInternet;
+    LinearLayout layoutNoResults;
+    LinearLayout layoutInitial;
+    ProgressBar progressBar;
 
 
 
@@ -65,14 +69,21 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
         super.onCreate(savedInstanceState);
         setUpWindow();
         setContentView(R.layout.activity_floating);
-        CharSequence text = getIntent()
+        final CharSequence text = getIntent()
                 .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT);
 
 
         recyclerView = findViewById(R.id.rv_results);
         materialSearchBar = findViewById(R.id.searchBar);
         layoutNoInternet = findViewById(R.id.layout_no_internet);
+        layoutNoResults = findViewById(R.id.layout_no_results);
+        layoutInitial = findViewById(R.id.layout_initial);
+        progressBar = findViewById(R.id.progressBar_cyclic);
         btnReload = findViewById(R.id.btn_reload);
+
+
+        // initial Layout
+        layoutInitial.setVisibility(View.VISIBLE);
 
         materialSearchBar.setOnSearchActionListener(this);
         adapter = new FloatingResultsAdapter(recyclerView, resultsList, getApplicationContext());
@@ -91,41 +102,51 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
         btnReload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO:add code for reloading
+                if (null != text) {
+                    performSearch(text);
+                }
             }
         });
-
     }
 
     private void performSearch(CharSequence text) {
         resultsList.clear();
         String query = apiUrl + text;
+
+        layoutInitial.setVisibility(View.GONE);
+        layoutNoInternet.setVisibility(View.GONE);
+        layoutNoResults.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, query, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("RESPONSE", response.toString());
-               layoutNoInternet.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
                 JSONArray results = null;
                 try {
                     results = response.getJSONArray("results");
-                    for (int i = 0; i < results.length(); i++) {
-                        JSONObject resObj = (JSONObject) results.get(i);
-                        String word = response.getString("word");
-                        String part = resObj.getString("partOfSpeech");
-                        String definition = resObj.getString("definition");
-                        String exampleString = "";
-                        try {
-                            JSONArray examples = resObj.getJSONArray("examples");
-                            for (int j = 0; j < examples.length(); j++) {
-                                exampleString += "- "+examples.get(j)+"<br />";
-                                if(j==2) break;
+                    Log.d("sjh",results.toString());
+                        layoutNoResults.setVisibility(View.GONE);
+                        for (int i = 0; i < results.length(); i++) {
+                            JSONObject resObj = (JSONObject) results.get(i);
+                            String word = response.getString("word");
+                            String part = resObj.getString("partOfSpeech");
+                            String definition = resObj.getString("definition");
+                            String exampleString = "";
+                            try {
+                                JSONArray examples = resObj.getJSONArray("examples");
+                                for (int j = 0; j < examples.length(); j++) {
+                                    exampleString += "- "+examples.get(j)+"<br />";
+                                    if(j==2) break;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            resultsList.add(new Results(word, definition, exampleString, part));
                         }
-                        resultsList.add(new Results(word, definition, exampleString, part));
-                    }
+
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -137,14 +158,26 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
                 if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                     //This indicates that the reuest has either time out or there is no connection
                     layoutNoInternet.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                    layoutInitial.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+
+                    Log.d("ssd", "connection");
                 } else if (error instanceof AuthFailureError) {
                     // Error indicating that there was an Authentication Failure while performing the request
                 } else if (error instanceof ServerError) {
                     //Indicates that the server responded with a error response
+                    layoutNoResults.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                    layoutInitial.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                    Log.d("ssd", "server");
                 } else if (error instanceof NetworkError) {
                     //Indicates that there was network error while performing the request
+                    Log.d("ssd", "network");
                 } else if (error instanceof ParseError) {
                     // Indicates that the server response could not be parsed
+                    Log.d("ssd", "parse");
                 }
             }
         }) {
@@ -219,8 +252,11 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
 
     @Override
     public void onButtonClicked(int buttonCode) {
-        switch (buttonCode) {
 
+        switch (buttonCode){
+            case MaterialSearchBar.BUTTON_BACK:
+                Log.d("Button Clicker", "BACK");
+                break;
         }
 
     }
