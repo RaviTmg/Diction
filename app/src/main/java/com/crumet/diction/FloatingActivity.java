@@ -1,5 +1,6 @@
 package com.crumet.diction;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -152,9 +154,9 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
 
         // You could also easily used an integer value from the shared preferences to set the percent
         if (height > width) {
-            getWindow().setLayout((int) (width * 0.95), (int) (height * .55));
+            getWindow().setLayout((int) (width * 0.9), (int) (height * .45));
         } else {
-            getWindow().setLayout((int) (width * 0.9), (int) (height * .65));
+            getWindow().setLayout((int) (width * 0.85), (int) (height * .55));
         }
     }
 
@@ -175,15 +177,20 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
 
     @Override
     public void onSearchConfirmed(CharSequence text) {
-        //startSearch(text.toString(), true, null, true);
-
-        performSearch(text);
+        performSearch(text.toString().toLowerCase());
+        // Hide soft keyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
     @Override
     public void onButtonClicked(int buttonCode) {
-        switch (buttonCode) {
-
+        Log.d("Button", String.valueOf(buttonCode));
+        switch (buttonCode){
+            case MaterialSearchBar.BUTTON_BACK:
+                // materialSearchBar.setPlaceHolder("Goo");
+                // materialSearchBar.disableSearch();
+                break;
         }
 
     }
