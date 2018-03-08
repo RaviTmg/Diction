@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,13 +19,9 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.List;
 
-/**
- * Created by ravi on 2/25/2018.
- */
-
 public class FloatingResultsAdapter extends RecyclerView.Adapter<FloatingResultsAdapter.ViewHolder> {
-    List<Results> resultsList ;
-    Context context;
+    private List<Results> resultsList;
+    private Context context;
 
     private static final int UNSELECTED = -1;
 
@@ -53,16 +48,17 @@ public class FloatingResultsAdapter extends RecyclerView.Adapter<FloatingResults
         String examples = results.getExample();
         String parts = results.getPartOfSpeech();
         String meaning = results.getMeaning();
-        h.meaning.setText(Html.fromHtml("<b>"+parts+". </b>"+ meaning));
-        if(examples.length() > 0) {
+        h.meaning.setText(Html.fromHtml("<b>" + parts + ". </b>" + meaning));
+        if (examples.length() > 0) {
             h.example.setText(Html.fromHtml("<b>Examples: </b><br/>" + examples));
         } else {
             h.example.setVisibility(View.GONE);
             h.expandButton.setVisibility(View.GONE);
         }
 
-        int number  = position+1;
-        h.number.setText(number+". ");
+        int number = position + 1;
+        String num = number + ". ";
+        h.number.setText(num);
     }
 
     @Override
@@ -70,7 +66,7 @@ public class FloatingResultsAdapter extends RecyclerView.Adapter<FloatingResults
         return resultsList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
         private ExpandableLayout expandableLayout;
         private ImageView expandButton;
         private RelativeLayout expandMore;

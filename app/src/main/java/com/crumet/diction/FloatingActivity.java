@@ -1,7 +1,6 @@
 package com.crumet.diction;
 
 import android.content.Context;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -17,8 +16,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -50,7 +47,6 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
 
 
     List<Results> resultsList = new ArrayList<>();
-    List<String> lastSearches;
 
     RecyclerView recyclerView;
     FloatingResultsAdapter adapter;
@@ -61,7 +57,6 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
     LinearLayout layoutNoResults;
     LinearLayout layoutInitial;
     ProgressBar progressBar;
-
 
 
     @Override
@@ -124,28 +119,28 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
                 Log.d("RESPONSE", response.toString());
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
-                JSONArray results = null;
+                JSONArray results;
                 try {
                     results = response.getJSONArray("results");
-                    Log.d("sjh",results.toString());
-                        layoutNoResults.setVisibility(View.GONE);
-                        for (int i = 0; i < results.length(); i++) {
-                            JSONObject resObj = (JSONObject) results.get(i);
-                            String word = response.getString("word");
-                            String part = resObj.getString("partOfSpeech");
-                            String definition = resObj.getString("definition");
-                            String exampleString = "";
-                            try {
-                                JSONArray examples = resObj.getJSONArray("examples");
-                                for (int j = 0; j < examples.length(); j++) {
-                                    exampleString += "- "+examples.get(j)+"<br />";
-                                    if(j==2) break;
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    Log.d("sjh", results.toString());
+                    layoutNoResults.setVisibility(View.GONE);
+                    for (int i = 0; i < results.length(); i++) {
+                        JSONObject resObj = (JSONObject) results.get(i);
+                        String word = response.getString("word");
+                        String part = resObj.getString("partOfSpeech");
+                        String definition = resObj.getString("definition");
+                        StringBuilder exampleString = new StringBuilder();
+                        try {
+                            JSONArray examples = resObj.getJSONArray("examples");
+                            for (int j = 0; j < examples.length(); j++) {
+                                exampleString.append("- ").append(examples.get(j)).append("<br />");
+                                if (j == 2) break;
                             }
-                            resultsList.add(new Results(word, definition, exampleString, part));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                        resultsList.add(new Results(word, definition, exampleString.toString(), part));
+                    }
 
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
@@ -183,7 +178,7 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("X-Mashape-Key", apiKey);
                 params.put("wordsapiv1.p.mashape.com", apiHost);
                 return params;
@@ -226,34 +221,41 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
     protected void onDestroy() {
         super.onDestroy();
         //save last queries to disk
-        //  saveSearchSuggestionToDisk(searchBar.getLastSuggestions());
+        // saveSearchSuggestionToDisk(searchBar.getLastSuggestions());
     }
 
     @Override
     public void onSearchStateChanged(boolean enabled) {
-        String s = enabled ? "enabled" : "disabled";
         if (!enabled) {
             materialSearchBar.setPlaceHolder(getString(R.string.app_name));
+            layoutInitial.setVisibility(View.VISIBLE);
+            layoutNoInternet.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            layoutNoResults.setVisibility(View.GONE);
         } else {
-
-            lastSearches = materialSearchBar.getLastSuggestions();
-            materialSearchBar.setLastSuggestions(lastSearches);
             layoutNoInternet.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onSearchConfirmed(CharSequence text) {
+
         performSearch(text.toString().toLowerCase());
         // Hide soft keyboard
-        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+
     }
 
     @Override
     public void onButtonClicked(int buttonCode) {
 
-        switch (buttonCode){
+        switch (buttonCode) {
             case MaterialSearchBar.BUTTON_BACK:
                 Log.d("Button Clicker", "BACK");
                 break;

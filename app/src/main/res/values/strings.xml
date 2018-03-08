@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Diction</string>
+    <string name="whoops">Whoops!!</string>
+    <string name="no_results_found">No Results found</string>
+    <string name="welcome">Welcome to Diction</string>
+    <string name="get_started">Tap the toolbar above to start searching</string>
+    <string name="no_internet_connection_1">no internet connection</string>
+    <string name="no_internet_connection_2">No Internet. Check your connection and try again</string>
+    <string name="reload">reload</string>
+    <string name="expand">expand</string>
 </resources>

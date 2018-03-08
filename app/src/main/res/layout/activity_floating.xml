@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/floatingbox_toolbar_background"
+        android:background="@drawable/bg_floating_toolbar"
         android:backgroundTint="@color/colorAccent"
         android:elevation="5sp"
         android:padding="4dp">
@@ -43,19 +43,20 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/layout_no_internet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ImageView
-                android:scaleType="fitCenter"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:contentDescription="@string/no_internet_connection_1"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_no_internet" />
 
             <LinearLayout
@@ -71,7 +72,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="16dp"
                     android:gravity="center"
-                    android:text="Whoops!!"
+                    android:text="@string/whoops"
                     android:textColor="@color/textColorLight"
                     android:textSize="18sp" />
 
@@ -81,7 +82,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="16dp"
                     android:gravity="center"
-                    android:text="No Internet. Check your connection and try again"
+                    android:text="@string/no_internet_connection_2"
                     android:textColor="@color/textColorLight"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -92,26 +93,27 @@
                     android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:background="@drawable/bg_button"
-                    android:text="reload"
+                    android:text="@string/reload"
                     android:textColor="@color/textColorLight" />
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/layout_no_results"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ImageView
-                android:scaleType="fitCenter"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:contentDescription="@string/no_results_found"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_no_internet" />
 
             <LinearLayout
@@ -127,7 +129,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="16dp"
                     android:gravity="center"
-                    android:text="Whoops!!"
+                    android:text="@string/whoops"
                     android:textColor="@color/textColorLight"
                     android:textSize="18sp" />
 
@@ -137,7 +139,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="16dp"
                     android:gravity="center"
-                    android:text="No Results found"
+                    android:text="@string/no_results_found"
                     android:textColor="@color/textColorLight"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -146,13 +148,13 @@
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/layout_initial"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
 
             <LinearLayout
@@ -168,7 +170,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="16dp"
                     android:gravity="center"
-                    android:text="Welcome to Diction"
+                    android:text="@string/welcome"
                     android:textColor="@color/textColorLight"
                     android:textSize="18sp" />
 
@@ -178,7 +180,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="16dp"
                     android:gravity="center"
-                    android:text="Click on toolbar to start searching"
+                    android:text="@string/get_started"
                     android:textColor="@color/textColorLight"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -187,17 +189,15 @@
         </LinearLayout>
 
         <ProgressBar
-            android:layout_weight="1"
             android:id="@+id/progressBar_cyclic"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
             android:minHeight="40dp"
             android:minWidth="40dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_centerInParent="true"
-            />
+            android:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_results"

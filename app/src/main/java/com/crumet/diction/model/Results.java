@@ -5,7 +5,7 @@ package com.crumet.diction.model;
  */
 
 public class Results {
-    String word, meaning, example,partOfSpeech;
+    private String word, meaning, example, partOfSpeech;
 
     public String getWord() {
         return word;

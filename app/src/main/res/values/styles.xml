@@ -9,12 +9,12 @@
     </style>
 
     <style name="PopupAnimation" parent="@android:style/Animation">
-    <item name="android:windowEnterAnimation">@anim/activity_slide_up</item>
-    <item name="android:windowExitAnimation">@anim/activity_slide_down</item>
+        <item name="android:windowEnterAnimation">@anim/activity_slide_up</item>
+        <item name="android:windowExitAnimation">@anim/activity_slide_down</item>
     </style>
 
 
-    <style name="Theme.FloatingWindow.Popup" parent="Theme.AppCompat.Light.NoActionBar" >
+    <style name="Theme.FloatingWindow.Popup" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">stateUnchanged</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -27,6 +27,6 @@
         <item name="android:windowElevation">15sp</item>
         <item name="android:windowSwipeToDismiss">true</item>
         <item name="android:windowClipToOutline">false</item>
-        <item name="android:windowBackground">@drawable/floatingbox_background</item>
+        <item name="android:windowBackground">@drawable/bg_floatingbox</item>
     </style>
 </resources>
