@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableRow;
@@ -16,7 +18,6 @@ import android.widget.TextView;
 import com.crumet.diction.R;
 import com.crumet.diction.model.Results;
 
-import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.List;
 
@@ -44,7 +45,10 @@ public class FloatingResultsAdapter extends RecyclerView.Adapter<FloatingResults
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder h, int position) {
+    public void onBindViewHolder(final ViewHolder h, int position) {
+
+
+        final boolean[] expanded = {false};
         Results results = resultsList.get(position);
         String examples = results.getExample();
         String parts = results.getPartOfSpeech();
@@ -60,15 +64,78 @@ public class FloatingResultsAdapter extends RecyclerView.Adapter<FloatingResults
         int number = position + 1;
         String num = number + ". ";
         h.number.setText(num);
+
+        h.expandMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!expanded[0]) {
+                    expanded[0] = true;
+                    expand(h.expandableLayout);
+                    h.expandButton.setImageResource(R.drawable.ic_arrow_drop_up);
+                } else {
+                    expanded[0] = false;
+                    collapse(h.expandableLayout);
+                    h.expandButton.setImageResource(R.drawable.ic_arrow_drop_down);
+                }
+            }
+        });
     }
 
+    private void expand(final View v) {
+        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final int targetheight = v.getMeasuredHeight();
+
+        v.getLayoutParams().height = 0;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? ViewGroup.LayoutParams.WRAP_CONTENT
+                        : (int) (targetheight * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        a.setDuration((int) (targetheight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+    public void collapse(final View v) {
+        final int initialHeight = v.getMeasuredHeight();
+
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(interpolatedTime == 1){
+                    v.setVisibility(View.GONE);
+                }else{
+                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                    v.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
     @Override
     public int getItemCount() {
         return resultsList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
-        private ExpandableLayout expandableLayout;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        private RelativeLayout expandableLayout;
         private ImageView expandButton;
         private TableRow expandMore;
         private TextView meaning, example;
@@ -81,45 +148,12 @@ public class FloatingResultsAdapter extends RecyclerView.Adapter<FloatingResults
             number = v.findViewById(R.id.number);
 
             expandableLayout = v.findViewById(R.id.more_about_word);
-            expandableLayout.setInterpolator(new OvershootInterpolator());
-            expandableLayout.setOnExpansionUpdateListener(this);
+
             expandButton = v.findViewById(R.id.expand_button);
             expandMore = v.findViewById(R.id.expand_more);
 
-            expandMore.setOnClickListener(this);
         }
 
-        public void bind() {
-            int position = getAdapterPosition();
-            boolean isSelected = position == selectedItem;
-            expandMore.setSelected(isSelected);
-            expandableLayout.setExpanded(isSelected, false);
-        }
 
-        @Override
-        public void onClick(View view) {
-            ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(selectedItem);
-            if (holder != null) {
-                holder.expandMore.setSelected(false);
-                holder.expandableLayout.collapse();
-            }
-
-            int position = getAdapterPosition();
-            if (position == selectedItem) {
-                selectedItem = UNSELECTED;
-            } else {
-                expandMore.setSelected(true);
-                expandableLayout.expand();
-                selectedItem = position;
-            }
-        }
-
-        @Override
-        public void onExpansionUpdate(float expansionFraction, int state) {
-            Log.d("ExpandableLayout", "State: " + state);
-            if (state == ExpandableLayout.State.EXPANDING) {
-                recyclerView.smoothScrollToPosition(getAdapterPosition());
-            }
-        }
     }
 }

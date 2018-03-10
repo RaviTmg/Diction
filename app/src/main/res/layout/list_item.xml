@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -48,14 +47,12 @@
     </TableRow>
 
 
-    <net.cachapa.expandablelayout.ExpandableLayout
+    <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/more_about_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f1f1f1"
-        app:el_duration="300"
-        app:el_expanded="false"
-        app:el_parallax="0.5">
+        android:background="#f1f1f1">
 
         <TextView
             android:id="@+id/example"
@@ -64,9 +61,7 @@
             android:layout_marginStart="36dp"
             android:paddingTop="8sp"
             android:textColor="#444"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_example" />
-    </net.cachapa.expandablelayout.ExpandableLayout>
+            android:textSize="16sp"/>
+    </RelativeLayout>
 
 </LinearLayout>

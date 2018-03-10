@@ -116,13 +116,13 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, query, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("RESPONSE", response.toString());
+                Log.d("JSON_RESPONSE", response.toString());
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
                 JSONArray results;
                 try {
                     results = response.getJSONArray("results");
-                    Log.d("sjh", results.toString());
+                    Log.d("result_length", results.length() + "");
                     layoutNoResults.setVisibility(View.GONE);
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject resObj = (JSONObject) results.get(i);
@@ -239,7 +239,8 @@ public class FloatingActivity extends AppCompatActivity implements MaterialSearc
 
     @Override
     public void onSearchConfirmed(CharSequence text) {
-
+        resultsList.clear();
+        adapter.notifyDataSetChanged();
         performSearch(text.toString().toLowerCase());
         // Hide soft keyboard
         View view = this.getCurrentFocus();
