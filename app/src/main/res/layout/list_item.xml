@@ -5,13 +5,15 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <TableRow
+        android:weightSum="20"
         android:id="@+id/expand_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8sp">
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,29 +24,28 @@
             android:textStyle="bold" />
 
         <TextView
+            android:layout_weight="18"
             android:id="@+id/meaning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
-            android:layout_toEndOf="@+id/number"
             android:textColor="#333"
             android:textSize="16sp" />
 
 
         <ImageView
+            android:layout_weight="1"
             android:id="@+id/expand_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_marginEnd="-8dp"
             android:layout_marginTop="6dp"
             android:contentDescription="@string/expand"
-            android:src="@drawable/ic_arrow_drop_down"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:foregroundGravity="right"
+            android:src="@drawable/ic_arrow_drop_down" />
 
-    </RelativeLayout>
+    </TableRow>
 
 
     <net.cachapa.expandablelayout.ExpandableLayout

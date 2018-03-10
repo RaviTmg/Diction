@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.crumet.diction.R;
@@ -69,7 +70,7 @@ public class FloatingResultsAdapter extends RecyclerView.Adapter<FloatingResults
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
         private ExpandableLayout expandableLayout;
         private ImageView expandButton;
-        private RelativeLayout expandMore;
+        private TableRow expandMore;
         private TextView meaning, example;
         private TextView number;
 
